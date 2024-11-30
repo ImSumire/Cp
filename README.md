@@ -80,9 +80,11 @@ println("");
 - Add more data structures (e.g. Set, String, Queue)
 
 ## Inspiration
-- [klib](https://github.com/attractivechaos/klib)
-- [Cello](https://libcello.org/)
-- [stb](https://github.com/nothings/stb)
+- [Zig](https://ziglang.org/) Memory management
+- [Rust](https://www.rust-lang.org/) Memory safety and error handling
+- [klib](https://github.com/attractivechaos/klib) Global inspiration
+- [Cello](https://libcello.org/) Abusive usage of void*
+- [stb](https://github.com/nothings/stb) Standalone support (I'm waiting for a stable version to do it)
 
 ## Contributing
 **Contributions are welcome!** Please fork this repository and submit a pull request. For major changes, open an issue to discuss your proposal first.
