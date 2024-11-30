@@ -4,7 +4,7 @@
 // #define WARN_EXIT
 // #define ERR_WARN
 #define DEBUG_MODE
-#include "../cp.h"
+#include "cp.h"
 
 i32 comp_i32(const Any a, const Any b) {
     i32 ia = bin_cast(a, i32);

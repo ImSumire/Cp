@@ -1,20 +1,32 @@
 #pragma once
 
-
 #include <string.h>
 
 #include "../panic.h"
 #include "../types/basics.h"
 #include "../memory/defer.h"
 #include "../memory/safety.h"
+#include "../loop.h"
 
-
+/**
+ * @typedef Node
+ * @brief Represents an individual element in `List`.
+ * It contains a value and a pointer to the next node.
+ * 
+ * `size = 16, align = 8`
+ */
 typedef struct Node {
-    untyped value;
+    Any value;
     struct Node* next;
 } Node;
 
-
+/**
+ * @typedef List
+ * @brief Represents a linked list, it maintains a head and tail
+ * pointer for efficient insertions and removals.
+ * 
+ * `size = 24, align = 8`
+ */
 typedef struct List {
     Node* head;
     Node* tail;
@@ -22,6 +34,10 @@ typedef struct List {
     i32 value_size;
 } List;
 
+/**
+ * @brief Frees the allocated memory of the list, including the nodes and their values.
+ * @param self Pointer of the list to be dropped.
+ */
 void list_drop(List* self) {
     if (!self) return;
 
@@ -30,7 +46,7 @@ void list_drop(List* self) {
 
     while (current != nullptr) {
         next_node = current->next;
-        free(current->value);  // Free the value
+        free(current->value);
         free(current);
         current = next_node;
     }
@@ -40,6 +56,11 @@ void list_drop(List* self) {
     self->size = 0;
 }
 
+/**
+ * @brief Creates a new empty list with the specified element size.
+ * @param value_size The size of the value stored in each list node.
+ * @return A newly created list.
+ */
 List list_new(i32 value_size) {
     return (List) {
         .head = nullptr,
@@ -49,8 +70,13 @@ List list_new(i32 value_size) {
     };
 }
 
+/**
+ * @brief Removes the node at the specified index from the list.
+ * @param self The list from which to remove the element.
+ * @param index The index of the node to be removed.
+ * @note O(n) where n is the index.
+ */
 void list_remove(List* self, i32 index) {
-    // O(n)
     if (!self || index < 0 || index >= self->size) {
         fprintf(stderr, "Index out of bounds!\n");
         exit(EXIT_FAILURE);
@@ -65,7 +91,7 @@ void list_remove(List* self, i32 index) {
         }
     } else {
         Node* prev = self->head;
-        for (i32 i = 0; i < index - 1; i++) {
+        for range(i, 0, index - 1) {
             prev = prev->next;
         }
         to_remove = prev->next;
@@ -80,25 +106,44 @@ void list_remove(List* self, i32 index) {
     self->size--;
 }
 
+/**
+ * @brief Returns an element from the list at the specified index.
+ * @param self   Pointer to the list.
+ * @param index  Index of the element to get.
+ * @return The element at the given index.
+ * @note O(n) where n is the index.
+ */
 #define list_get(self, index) _list_get(__FILE__, __LINE__, self, index)
 
-untyped _list_get(const char* file, i32 line, const List* self, i32 index) {
-    // O(n)
+/**
+ * @brief Internal helper function to get an element from the list.
+ * @param file The source file name, used for debugging.
+ * @param line The line number, used for debugging.
+ * @param self Pointer to the list.
+ * @param index Index of the element to get.
+ * @return The element at the given index.
+ * @note O(n) where n is the index.
+ */
+Any _list_get(const char* file, i32 line, const List* self, i32 index) {
     if (!self || index < 0 || index >= self->size) {
         _panic(file, line, "Index out of bounds\n");
         return nullptr;
     }
 
     Node* node = self->head;
-    for (i32 i = 0; i < index; i++) {
+    for range(i, 0, index) {
         node = node->next;
     }
     return node->value;
 }
 
-void list_push(List* self, untyped value) {
-    // DEV: to test
-    // O(1)
+/**
+ * @brief Adds a new element to the start of the list.
+ * @param self Pointer to the list.
+ * @param value The element to add.
+ * @note O(1)
+ */
+void list_push(List* self, Any value) {
     Node* new_node = (Node*)safe_malloc(sizeof(Node));
     new_node->value = malloc(self->value_size);  // Allocate memory for the value
 
@@ -114,8 +159,13 @@ void list_push(List* self, untyped value) {
     self->size++;
 }
 
-void list_push_back(List* self, untyped value) {
-    // O(1) thanks to self.tail
+/**
+ * @brief Adds a new element to the end of the list.
+ * @param self Pointer to the list.
+ * @param value The element to add.
+ * @note O(1)
+ */
+void list_push_back(List* self, Any value) {
     Node* new_node = (Node*)safe_malloc(sizeof(Node));
     new_node->value = malloc(self->value_size);  // Allocate memory for the value
 
@@ -131,10 +181,25 @@ void list_push_back(List* self, untyped value) {
     self->size++;
 }
 
+/**
+ * @brief Inserts a new element into the list at the specified index.
+ * @param self Pointer to the list.
+ * @param value The element to insert.
+ * @param index The index at which to insert the element.
+ * @note O(n)
+ */
 #define list_insert(self, value, index) _list_insert(__FILE__, __LINE__, self, value, index)
 
-void _list_insert(const char* file, i32 line, List* self, untyped value, i32 index) {
-    // O(n)
+/**
+ * @brief Internal helper function to insert an element into the list.
+ * @param file The source file name, used for debugging.
+ * @param line The line number, used for debugging.
+ * @param self Pointer to the list.
+ * @param value The element to insert.
+ * @param index The index at which to insert the element.
+ * @note O(n)
+ */
+void _list_insert(const char* file, i32 line, List* self, Any value, i32 index) {
     if (!self || index < 0 || index > self->size) {
         _panic(file, line, "Index out of bounds\n");
         return;
@@ -152,7 +217,7 @@ void _list_insert(const char* file, i32 line, List* self, untyped value, i32 ind
         }
     } else {
         Node* prev = self->head;
-        for (i32 i = 0; i < index - 1; i++) {
+        for range(i, 0, index - 1) {
             prev = prev->next;
         }
         new_node->next = prev->next;
@@ -165,13 +230,19 @@ void _list_insert(const char* file, i32 line, List* self, untyped value, i32 ind
     self->size++;
 }
 
-List list_map(List* self, Callable(transform, untyped, const untyped)) {
+/**
+ * @brief Creates a new list by applying a transformation function to each element of the original list.
+ * @param self Pointer to the original list.
+ * @param transform A callable that takes an element and returns a transformed value.
+ * @return A new list with the transformed elements.
+ */
+List list_map(List* self, Callable(transform, Any, const Any)) {
     List new_list = list_new(self->value_size);
     if (!self) return new_list;
 
     Node* node = self->head;
     while (node != nullptr) {
-        untyped transformed = transform(node->value);
+        Any transformed = transform(node->value);
         list_push_back(&new_list, transformed);
         node = node->next;
         free(transformed);  // Clean up the transformed value after copying
@@ -179,22 +250,26 @@ List list_map(List* self, Callable(transform, untyped, const untyped)) {
     return new_list;
 }
 
-#define list_iter(self, func) _list_iter(__FILE__, __LINE__, self, func)
-
-void _list_iter(const char* file, i32 line, const List* self, Callable(func, void, const untyped)) {
-    if (!self) {
-        _panic(file, line, "List is null\n");
-        return;
-    }
-
+/**
+ * @brief Iterates through the list, applying a function to each element.
+ * @param self Pointer to the list.
+ * @param func A callable that takes an element and performs an operation.
+ */
+void list_iter(const List* self, Callable(func, void, const Any)) {
     Node* node = self->head;
     while (node != nullptr) {
-        func(node->value);  // Apply the function to each element
+        func(node->value);
         node = node->next;
     }
 }
 
-char* list_to_str(const List* self, Callable(converter, char*, const untyped)) {
+/**
+ * @brief Converts the list to a string representation using a converter function for each element.
+ * @param self Pointer to the list.
+ * @param converter A callable that converts each element to a string.
+ * @return A string representation of the list.
+ */
+char* list_to_str(const List* self, Callable(converter, char*, const Any)) {
     if (self == nullptr || self->head == nullptr)
         return "[]";
     
@@ -242,13 +317,25 @@ char* list_to_str(const List* self, Callable(converter, char*, const untyped)) {
     return result;
 }
 
-void list_print(const List* self, Callable(converter, char*, const untyped)) {
+/**
+ * @brief Prints the list's string representation using a converter function for each element.
+ * @param self Pointer to the list.
+ * @param converter A callable that converts each element to a string.
+ */
+
+void list_print(const List* self, Callable(converter, char*, const Any)) {
     char* result = list_to_str(self, converter);
     print("%s", result);
     free(result);
 }
 
-void list_println(const List* self, Callable(converter, char*, const untyped), ...) {
+/**
+ * @brief Prints the list's string representation with a newline at the end, 
+ * using a converter function for each element.
+ * @param self Pointer to the list.
+ * @param converter A callable that converts each element to a string.
+ */
+void list_println(const List* self, Callable(converter, char*, const Any)) {
     char* result = list_to_str(self, converter);
     print("%s\n", result);
     free(result);

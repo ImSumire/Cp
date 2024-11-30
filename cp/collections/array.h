@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <stdlib.h>
 
 #include "../types/basics.h"
@@ -8,7 +7,7 @@
 
 
 typedef struct SafeArray {
-    untyped values;
+    Any values;
     usize size;
 } SafeArray;
 

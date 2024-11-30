@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "./types/basics.h"
 
 
@@ -27,16 +26,9 @@
 
 #define list_each(item, list)                                               \
     (                                                                       \
-        untyped _node_ptr = (&list)->head, *item;                           \
+        Any _node_ptr = (&list)->head, *item;                           \
         _node_ptr != nullptr && ((item) = ((Node*)_node_ptr)->value, 1);    \
         _node_ptr = ((Node*)_node_ptr)->next                                \
-    )
-
-#define vec_each(item, vec)                                                 \
-    (                                                                       \
-        i8* _ptr = (i8*)vec.values, *item = (i8*)_ptr;                      \
-        _ptr < (i8*)vec.values + vec.size * vec.value_size;                 \
-        _ptr += vec.value_size, item = (i8*)_ptr                            \
     )
 
 #define hash_keys_each(item, map)                                           \
@@ -52,8 +44,10 @@
         _index < _max;                                                      \
         _index++                                                            \
     ) for (                                                                 \
-        untyped _key = (i8*)map.keys + _index * map.key_size,               \
+        Any _key = (i8*)map.keys + _index * map.key_size,               \
         *item = hash_get(&map, _key);                                       \
         _key != nullptr && item != nullptr;                                 \
         _key = nullptr                                                      \
     )
+
+#define loop while (true)

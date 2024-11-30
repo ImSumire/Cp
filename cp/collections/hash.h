@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,17 +11,17 @@
 #include "../memory/packed.h"
 
 
-typedef pstruct HashMap {
-    Callable(hash, i32, untyped);
+typedef struct packed HashMap {
+    Callable(hash, i32, Any);
 
     i32 capacity;
     i32 count;
 
     i32 key_size;
-    untyped keys;
+    Any keys;
 
     i32 value_size;
-    untyped values;
+    Any values;
 } HashMap;
 
 void hash_drop(HashMap* self) {
@@ -32,7 +31,7 @@ void hash_drop(HashMap* self) {
     self->keys = nullptr;
 }
 
-HashMap hash_new(i32 key_size, i32 value_size, i32 capacity, Callable(hash, i32, untyped)) {
+HashMap hash_new(i32 key_size, i32 value_size, i32 capacity, Callable(hash, i32, Any)) {
     return (HashMap) {
         .hash = hash,
         .capacity = capacity,
@@ -46,7 +45,7 @@ HashMap hash_new(i32 key_size, i32 value_size, i32 capacity, Callable(hash, i32,
 
 #define hash_insert(self, key, value) _hash_insert(__FILE__, __LINE__, self, key, value)
 
-void _hash_insert(const char* file, i32 line, HashMap* self, untyped key, untyped value) {
+void _hash_insert(const char* file, i32 line, HashMap* self, Any key, Any value) {
     if (self->count >= self->capacity) {
         _panic(file, line, "HashMap is full");
         return;
@@ -63,7 +62,7 @@ void _hash_insert(const char* file, i32 line, HashMap* self, untyped key, untype
     self->count++;
 }
 
-bool hash_contains_key(HashMap* self, untyped key) {
+bool hash_contains_key(HashMap* self, Any key) {
     for (i32 i = 0; i < self->count; i++) {
         if (memcmp((i8*)self->keys + i * self->key_size, key, self->key_size) == 0) {
             return true;
@@ -72,7 +71,7 @@ bool hash_contains_key(HashMap* self, untyped key) {
     return false;
 }
 
-untyped hash_get(HashMap* self, untyped key) {
+Any hash_get(HashMap* self, Any key) {
     i32 index = (self->hash(key) % self->capacity + self->capacity) % self->capacity;
 
     return (i8*)self->values + index * self->value_size;
@@ -80,12 +79,12 @@ untyped hash_get(HashMap* self, untyped key) {
 
 // Utils
 
-i32 int_hash(untyped n) {
+i32 int_hash(Any n) {
     return *cast(n, i32*);
 }
 
 // String hash function (djb2 algorithm)
-i32 string_hash(untyped str) {
+i32 string_hash(Any str) {
     char* s = *(char**)str;
     unsigned long hash = 5381;
     i32 c;

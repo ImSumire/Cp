@@ -15,8 +15,8 @@ https://gcc.gnu.org/onlinedocs/gcc-4.0.0/gcc/Variable-Attributes.html
 #define defer(fn) __attribute__((cleanup(fn)))
 
 #define defered __attribute__((cleanup(_defer_cleanup)))
-void _defer_cleanup(untyped ptr) {
-    untyped* p = cast(ptr, untyped*);
+void _defer_cleanup(Any ptr) {
+    Any* p = cast(ptr, Any*);
     if (*p) {
         free(*p);
     }

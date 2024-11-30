@@ -7,26 +7,223 @@
 #include <stdbool.h>  // %d
 
 
-#define i8 int8_t  // `%i`
-#define i16 int16_t  // `%i`
-#define i32 int32_t  // `%i`
-#define i64 int64_t  // `%li`
+/**
+ * @typedef i8
+ * @brief A shorthand for an 8-bit signed integer.
+ * 
+ * `size = 1`
+ * 
+ * Format specifier: `%i`
+*/
+typedef int8_t i8;
 
-#define u8 uint8_t  // `%u`
-#define u16 uint16_t  // `%u`
-#define u32 uint32_t  // `%u`
-#define u64 uint64_t  // `%u`
+/**
+ * @typedef i16
+ * @brief A shorthand for a 16-bit signed integer.
+ * 
+ * Size: 16 bits (2 bytes).
+ * 
+ * Format specifier: `%i`
+ */
+typedef int16_t i16;
 
-#define usize size_t  // `%zu`
-#define isize ptrdiff_t  // `%td`
+/**
+ * @typedef i32
+ * @brief A shorthand for a 32-bit signed integer.
+ * 
+ * Size: 32 bits (4 bytes).
+ * 
+ * Format specifier: `%i`
+ */
+typedef int32_t i32;
 
-#define f32 float  // `%f`
-#define f64 double  // `%lf`
+/**
+ * @typedef i64
+ * @brief A shorthand for a 64-bit signed integer.
+ * 
+ * Size: 64 bits (8 bytes).
+ * 
+ * Format specifier: `%li`
+ */
+typedef int64_t i64;
 
+/**
+ * @typedef u8
+ * @brief A shorthand for an 8-bit unsigned integer.
+ * 
+ * Size: 8 bits (1 byte).
+ * 
+ * Format specifier: `%u`
+ */
+typedef uint8_t u8;
+
+/**
+ * @typedef u16
+ * @brief A shorthand for a 16-bit unsigned integer.
+ * 
+ * Size: 16 bits (2 bytes).
+ * 
+ * Format specifier: `%u`
+ */
+typedef uint16_t u16;
+
+/**
+ * @typedef u32
+ * @brief A shorthand for a 32-bit unsigned integer.
+ * 
+ * Size: 32 bits (4 bytes).
+ * 
+ * Format specifier: `%u`
+ */
+typedef uint32_t u32;
+
+/**
+ * @typedef u64
+ * @brief A shorthand for a 64-bit unsigned integer.
+ * 
+ * Size: 64 bits (8 bytes).
+ * 
+ * Format specifier: `%u`
+ */
+typedef uint64_t u64;
+
+/**
+ * @typedef usize
+ * @brief A shorthand for the `size_t` type, representing the size of an object.
+ * 
+ * Format specifier: `%zu`
+ */
+typedef size_t usize;
+
+/**
+ * @typedef isize
+ * @brief A shorthand for the `ptrdiff_t` type, representing the difference between two pointers.
+ * 
+ * Format specifier: `%td`
+ */
+typedef ptrdiff_t isize;
+
+/**
+ * @typedef f32
+ * @brief A shorthand for the 32-bit floating-point type.
+ * 
+ * Format specifier: `%f`
+ */
+typedef float f32;
+
+/**
+ * @typedef f64
+ * @brief A shorthand for the 64-bit floating-point type (double precision).
+ * 
+ * Format specifier: `%lf`
+ */
+typedef double f64;
+
+/**
+ * @def Callable(name, return_type, ...)
+ * @brief Defines a callable function pointer.
+ * 
+ * @param name The name of the function pointer.
+ * @param return_type The return type of the function.
+ * @param ... The parameter types for the function.
+ * 
+ * ---
+ */
 #define Callable(name, return_type, ...) return_type (*name)(__VA_ARGS__)
 
+/**
+ * @def nullptr
+ * @brief Defines a shorthand for the `NULL` pointer.
+ * 
+ * ---
+ */
 #define nullptr NULL
 
-#define untyped void*
+/**
+ * @typedef Any
+ * @brief A shorthand for the `void*` type, representing an untyped pointer.
+ */
+typedef void* Any;
+// Other name ideas: generic, raw_ptr, Any, any
 
+/**
+ * @def cast(value, type)
+ * @brief A macro to cast a value to a specific type.
+ * 
+ * @param value The value to be cast.
+ * @param type The type to cast the value to.
+ * 
+ * ---
+ */
 #define cast(value, type) ((type) value)
+
+/**
+ * @def ptr_cast(value, type)
+ * @brief Casts a pointer to a specified type.
+ * 
+ * @param ptr The pointer to be cast.
+ * @param type The target type to cast the pointer to.
+ * @return A pointer cast to the specified type.
+ * 
+ * @note This is a type-safe wrapper for pointer casting.
+ * 
+ * ---
+ */
+#define ptr_cast(ptr, type) ((type*)(ptr))
+
+/**
+ * @def bin_cast(value, type)
+ * @brief Casts a pointer value to a specified type.
+ * 
+ * @param ptr The pointer to be cast.
+ * @param type The target type to cast the pointer value to.
+ * @return A value to the specified type.
+ * 
+ * @note This is a non-type-safe wrapper for casting.
+ * 
+ * ---
+ */
+#define bin_cast(ptr, type) *((type*)(ptr))
+
+/**
+ * @def var(type, name, value)
+ * @brief Provides a temporary initialized value.
+ * 
+ * @param type The data type of the variable.
+ * @param name The name of the variable.
+ * @param value The value to initialize the variable with.
+ * @return The declared variable.
+ * 
+ * ---
+ */
+#define var(type, value) ({ type _ = value; _; })
+
+/**
+ * @def var_ptr(type, name, value)
+ * @brief Provides the address of a temporary initialized value.
+ * 
+ * @param type The data type of the variable.
+ * @param value The value to initialize the variable with.
+ * @return The address of the declared variable.
+ * 
+ * ---
+ */
+#define var_ptr(type, value) ({ type _ = value; &_; })
+
+/**
+ * @def alloc_var_ptr(type, value)
+ * @brief Provides the address of a temporary heap-allocated initialized value. 
+ * 
+ * @param type The data type of the variable.
+ * @param value The value to initialize the variable with.
+ * @return A pointer to the heap-allocated and initialized variable.
+ * 
+ * @note Don't forget to defer!
+ * 
+ * ---
+ */
+#define alloc_var_ptr(type, value) ({ \
+    type* result = malloc(sizeof(type)); \
+    *result = value; \
+    result; \
+})
