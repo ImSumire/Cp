@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 
 void startup() {
@@ -14,4 +15,6 @@ void __attribute__((destructor)) quit();
 
 int main() {
     printf("Running Main\n");
+
+    exit(0);
 }
