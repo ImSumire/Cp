@@ -9,15 +9,14 @@ https://gcc.gnu.org/onlinedocs/gcc-4.0.0/gcc/Variable-Attributes.html
 */
 
 #include <stdlib.h>
+
 #include "../types/basics.h"
 
 
 #define defer(fn) __attribute__((cleanup(fn)))
 
-#define defered __attribute__((cleanup(_defer_cleanup)))
-void _defer_cleanup(Any ptr) {
-    Any* p = cast(ptr, Any*);
-    if (*p) {
-        free(*p);
-    }
+void ptr_drop(any ptr) {
+    free(ptr);
 }
+
+#define defered defer(ptr_drop)

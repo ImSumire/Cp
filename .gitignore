@@ -1,3 +1,6 @@
+# C+ Makefile target
+target/
+
 # Prerequisites
 *.d
 

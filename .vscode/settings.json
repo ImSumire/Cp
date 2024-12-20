@@ -6,22 +6,16 @@
         "*.js.liquid": "liquid-javascript",
         "*.css.liquid": "liquid-css",
         "*.scss.liquid": "liquid-scss",
-        "random": "cpp",
-        "vector": "cpp",
-        "optional": "cpp",
-        "system_error": "cpp",
+        "cp.h": "c",
+        "result.h": "c",
+        "utils.h": "c",
         "array": "cpp",
-        "functional": "cpp",
-        "tuple": "cpp",
-        "type_traits": "cpp",
-        "utility": "cpp",
         "deque": "cpp",
         "list": "cpp",
         "string": "cpp",
-        "iterator": "cpp",
-        "string_view": "cpp",
         "unordered_map": "cpp",
-        "compare": "cpp",
-        "typeinfo": "cpp"
+        "vector": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp"
     }
 }

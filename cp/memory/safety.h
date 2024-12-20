@@ -1,28 +1,20 @@
 #pragma once
 
-#include <stdio.h>
 #include <stdlib.h>
 
-#include "../panic.h"
+#include "../keywords.h"
+#include "../types/result.h"
 #include "../types/basics.h"
 
 
-#define safe_malloc(size) _safe_malloc(__FILE__, __LINE__, size)
-Any _safe_malloc(const char* file, i32 line, size_t size) {
-    Any ptr = malloc(size);
-    if (!ptr) {
-        _panic(file, line, "Memory allocation failed");
-        return nullptr;
-    }
-    return ptr;
-}
+#define alloc(size) _safe_malloc(__FILE__, __LINE__, size)
 
-#define safe_realloc(ptr, size) _safe_realloc(__FILE__, __LINE__, ptr, size)
-Any _safe_realloc(const char* file, i32 line, Any _ptr, size_t size) {
-    Any ptr = realloc(_ptr, size);
-    if (!ptr) {
-        _panic(file, line, "Memory reallocation failed");
-        return nullptr;
-    }
-    return ptr;    
+// nodiscard
+Result _safe_malloc(const char* file, i32 line, usize size) {
+    any ptr = malloc(size);
+
+    if (!ptr)
+        return Err("Memory allocation failed");
+
+    return Ok(ptr);
 }

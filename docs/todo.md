@@ -1,36 +1,64 @@
-# C+
+# Docs
+- [ ] C+ Style/Convention
+    - pragma
+    - PascalCase/camelCase (https://hackmd.io/@Octal9139/BkCOF_7IA)
+    - defering
+- [ ] Env advices (Inlay, ...)
 
-Inspiration:
-- [klib](https://github.com/attractivechaos/klib)
-- [stb](https://github.com/nothings/stb)
+# Keywords
+- [x] defer (__attribute__((cleanup(fn))))
+- [x] packed (__attribute__((__packed__)))
+- [x] unreachable (__builtin_unreachable())
+- [x] assert
+- [x] static_assert
+- [x] deprecated (__attribute__ ((deprecated)))
+- [ ] nodiscard
 
+# Safety
+- [ ] Result (50%)
+    - res_to_opt
+    - expect (panics if is an Err)
+    - expect_err (... Ok)
+    - unwrap_err
+    - map
+    - map_or
+- [ ] Option
 
-- [ ] Complete documentation
+# Generic Shortcuts
+- [ ] drop
+- [ ] push
+- [ ] pop
+- [ ] at
 
-### Types
-- [x] Ints: i8, i16, i32, i64
-- [x] Unsigned-ints: u8, u16, u32, u64
-- [x] usize, isize
-- [x] Floats: f32, f64
-
-### Memory Management
-- [ ] Boxing (Unique pointer)
-- [ ] Ref (Shared pointer)
-- [x] Defer
-- [ ] Smart (Smart pointer, Automatically freed)
-
-### Safety
-- [x] Safe malloc
-- [x] Error handling
-- [x] Panic
-
-### Data Structures
-- [x] List (Linked lists)
-- [x] Vector (Dynamic arrays)
-- [x] HashMap
-- [ ] SafeArray
-- [ ] Queue
+# Collection
+- [x] Array
+- [ ] PointerArray
+- [ ] Vector
+- [ ] PointerVector
 - [ ] Stack
-- [ ] Priority queue
-- [ ] Set
 - [ ] String
+
+- [ ] List
+- [ ] Queue
+- [ ] Priority Queue
+
+- [ ] HashMap
+- [ ] HashSet
+
+- [ ] BTree
+
+- [ ] Complex
+
+# Types
+- [ ] CString (char*)
+- [ ] File
+- [ ] Mutex (lock/unlock)
+- [ ] Thread-Safe Collections
+
+# Makefile
+- [x] Force build when no target (in case when gcc didn't compile)
+- [x] Run tests from `tests/`
+
+# Maybe
+- [ ] Package Manager
+- [ ] Garbage Collector (with mark(ptr, fn), copyable, ...)

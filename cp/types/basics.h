@@ -120,7 +120,7 @@ typedef float f32;
 typedef double f64;
 
 /**
- * @def Callable(name, return_type, ...)
+ * @def Fn(name, return_type, ...)
  * @brief Defines a callable function pointer.
  * 
  * @param name The name of the function pointer.
@@ -129,7 +129,7 @@ typedef double f64;
  * 
  * ---
  */
-#define Callable(name, return_type, ...) return_type (*name)(__VA_ARGS__)
+#define Fn(name, return_type, ...) return_type (*name)(__VA_ARGS__)
 
 /**
  * @def nullptr
@@ -140,90 +140,7 @@ typedef double f64;
 #define nullptr NULL
 
 /**
- * @typedef Any
+ * @typedef any
  * @brief A shorthand for the `void*` type, representing an untyped pointer.
  */
-typedef void* Any;
-// Other name ideas: generic, raw_ptr, Any, any
-
-/**
- * @def cast(value, type)
- * @brief A macro to cast a value to a specific type.
- * 
- * @param value The value to be cast.
- * @param type The type to cast the value to.
- * 
- * ---
- */
-#define cast(value, type) ((type) value)
-
-/**
- * @def ptr_cast(value, type)
- * @brief Casts a pointer to a specified type.
- * 
- * @param ptr The pointer to be cast.
- * @param type The target type to cast the pointer to.
- * @return A pointer cast to the specified type.
- * 
- * @note This is a type-safe wrapper for pointer casting.
- * 
- * ---
- */
-#define ptr_cast(ptr, type) ((type*)(ptr))
-
-/**
- * @def bin_cast(value, type)
- * @brief Casts a pointer value to a specified type.
- * 
- * @param ptr The pointer to be cast.
- * @param type The target type to cast the pointer value to.
- * @return A value to the specified type.
- * 
- * @note This is a non-type-safe wrapper for casting.
- * 
- * ---
- */
-#define bin_cast(ptr, type) *((type*)(ptr))
-
-/**
- * @def var(type, name, value)
- * @brief Provides a temporary initialized value.
- * 
- * @param type The data type of the variable.
- * @param name The name of the variable.
- * @param value The value to initialize the variable with.
- * @return The declared variable.
- * 
- * ---
- */
-#define var(type, value) ({ type _ = value; _; })
-
-/**
- * @def var_ptr(type, name, value)
- * @brief Provides the address of a temporary initialized value.
- * 
- * @param type The data type of the variable.
- * @param value The value to initialize the variable with.
- * @return The address of the declared variable.
- * 
- * ---
- */
-#define var_ptr(type, value) ({ type _ = value; &_; })
-
-/**
- * @def alloc_var_ptr(type, value)
- * @brief Provides the address of a temporary heap-allocated initialized value. 
- * 
- * @param type The data type of the variable.
- * @param value The value to initialize the variable with.
- * @return A pointer to the heap-allocated and initialized variable.
- * 
- * @note Don't forget to defer!
- * 
- * ---
- */
-#define alloc_var_ptr(type, value) ({ \
-    type* result = malloc(sizeof(type)); \
-    *result = value; \
-    result; \
-})
+typedef void* any;

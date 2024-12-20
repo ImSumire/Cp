@@ -1,9 +1,10 @@
 #pragma once
 
-#include "./basics.h"
-#include "../panic.h"
-#include "../memory/packed.h"
+#include <stdlib.h>
 
+#include "../panic.h"
+#include "./basics.h"
+#include "../memory/packed.h"
 
 /**
  * @typedef Result
@@ -16,7 +17,7 @@ typedef struct packed Result {
     const bool is_ok;
 
     union {
-        Any value;
+        any value;
         const char* error;
     } data;
 } Result;
@@ -24,31 +25,26 @@ typedef struct packed Result {
 void res_drop(Result* self) {
     if (self->is_ok) {
         free(self->data.value);
-        self->data.value = nullptr;
     }
 }
 
 #define unwrap(self) _unwrap(__FILE__, __LINE__, self)
-Any _unwrap(const char* file, i32 line, Result self) {
+
+any _unwrap(const char* file, i32 line, Result self) {
     if (self.is_ok) {
         return self.data.value;
     }
+
     _panic(file, line, self.data.error);
 }
 
 #define unwrap_as(self, type) bin_cast(_unwrap(__FILE__, __LINE__, self), type)
 
-inline static Result Ok(Any value) {
+inline static Result Ok(any value) {
     return (Result) { .is_ok = true, .data.value = value };
 }
 
-/* inline Result OkOk() {
-    return (Result) { .is_ok = true, .data.value = nullptr };
-} */
-
-
-static Result OkOk = { .is_ok = true, .data.value = nullptr };
-// #define OkOk (Result) { .is_ok = true, .data.value = nullptr }
+#define OkOk (Result) { .is_ok = true, .data.value = nullptr }
 
 #ifdef ERR_WARN
     #define Err(message) _Err(__FILE__, __LINE__, message)

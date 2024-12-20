@@ -1,13 +1,16 @@
 #pragma once
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <string.h>
 #include <stdarg.h>
+#include <errno.h>
+#include <stdio.h>
+
+#include <string.h>
+
+#include "./types/basics.h"
 
 
 #define panic(fmt, ...) _panic(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
+
 void _panic(const char* file, i32 line, const char* fmt, ...) {
     va_list args;
 
@@ -27,13 +30,14 @@ void _panic(const char* file, i32 line, const char* fmt, ...) {
         fprintf(stderr, "Error code: %d, Message: %s\n", errno, strerror(errno));
     }
 
-    #ifdef PANIC_EXIT
+    #ifndef PANIC_CONTINUE
         // Terminate the program
         exit(EXIT_FAILURE);
     #endif
 }
 
 #define warn(fmt, ...) _warn(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
+
 void _warn(const char* file, i32 line, const char* fmt, ...) {
     va_list args;
 
