@@ -23,8 +23,26 @@ A modern, safer approach to C
 - **Custom Allocators**: Define custom memory allocators (e.g., `Arena`, `Pool`) for more flexible and performant memory management.
 - **Debug Helpers**: Optional debug macros and stack tracing for easier debugging.
 
+#### Cons
+- **Reduced Control**: Higher-level abstractions can obscure low-level details, limiting fine-grained control over performance-critical operations.
+- **Compiler Optimization Challenges**: Frequent use of casting (with `void*`) can hinder the compiler's ability to perform optimizations.
+- **Lack of Type Safety**: `void*` usage removes type information, increasing the risk of runtime errors and requiring manual type management.
+- **Potential for Subtle Bugs**: Absence of compile-time type checking makes it easier for type mismatches to go unnoticed, leading to hard-to-debug runtime issues.
+- **Missed Optimization Opportunities**: Without type-specific information, the compiler cannot apply advanced optimizations like loop unrolling or vectorization, which can degrade performance.
+
+#### Pros
+- **Faster Development**: Streamlined workflows and abstraction layers facilitate rapid development and reduce boilerplate code.
+- **Simplified Memory Management**: Features like deferring and garbage collection (currently in progress) simplify handling of memory, reducing the risk of memory leaks or dangling pointers.
+- **Improved Code Quality**: Clear syntax and structured conventions enhance readability and maintainability of the codebase.
+- **Developer-Friendly Tooling**: An intuitive, [Cargo](https://doc.rust-lang.org/cargo/)-like environment improves build, checks, and tests efficiency.
+
+#### Production
+C+ is a funny, serious, and innovative library that showcases what can be done to make C programming more modern and enjoyable. However, for production-level software, it’s generally wiser to rely on established languages like **C**, **C++**, or **Rust**, or others that are tailored for robustness, performance, and long-term maintainability.
+
+Use C+ as an experimental tool, a teaching resource, or even as a source of inspiration. But for mission-critical systems, stick with languages and tools that have stood the test of time. C+ may not be the best hammer for every nail — but it’s certainly a cool one to have in your toolbox hehe!
+
 ## Usage
-### 1. Basic Example - Result Type and Error Handling
+#### Error Handling using Result
 ```c
 // Basic error-safe function using `Result`
 Result divide(i32 a, i32 b) {
@@ -51,13 +69,13 @@ int main() {
 }
 ```
 
-### 2. Memory Management with Defer
+#### Memory Management with Defering
 ```c
 // Will be freed when the variable goes out of scope
 defered int* data = unwrap(alloc(sizeof(int) * 12));
 ```
 
-### 3. Custom Loop Macros
+#### Custom Iterators Macros
 ```c
 defer(list_drop) List list = list_new(sizeof(i32));
 
